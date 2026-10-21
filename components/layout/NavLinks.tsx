@@ -7,17 +7,13 @@ import { navItems, siteConfig } from "@/config/site";
 
 type NavLinksProps = {
   variant?: "desktop" | "mobile";
-  /** Called after a link is clicked (the mobile menu uses it to close). */
   onNavigate?: () => void;
 };
 
-/**
- * Header menu. Clicking an item:
- *   1. selects that trip tab in the booking form (shared state), and
- *   2. on the home page: smoothly scrolls down to the form,
- *      on any other page: goes to "/#booking" (the browser scrolls there).
- */
-export default function NavLinks({ variant = "desktop", onNavigate }: NavLinksProps) {
+export default function NavLinks({
+  variant = "desktop",
+  onNavigate,
+}: NavLinksProps) {
   const pathname = usePathname();
   const { trip, selectTrip } = useTrip();
   const onHome = pathname === "/";
@@ -38,11 +34,16 @@ export default function NavLinks({ variant = "desktop", onNavigate }: NavLinksPr
               if (onHome) {
                 event.preventDefault();
                 // Mobile: wait for the menu to close and unlock page scrolling.
-                window.setTimeout(scrollToBooking, variant === "mobile" ? 150 : 0);
+                window.setTimeout(
+                  scrollToBooking,
+                  variant === "mobile" ? 150 : 0,
+                );
               }
             }}
             aria-current={isActive ? "true" : undefined}
-            className={variant === "mobile" ? "nav-link nav-link-mobile" : "nav-link"}
+            className={
+              variant === "mobile" ? "nav-link nav-link-mobile" : "nav-link"
+            }
           >
             {item.label}
           </Link>

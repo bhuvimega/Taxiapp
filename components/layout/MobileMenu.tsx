@@ -12,8 +12,6 @@ export default function MobileMenu() {
   const pathname = usePathname();
   const { phone, routes } = siteConfig;
 
-  // Remember WHICH page the menu was opened on. When the route changes the two
-  // no longer match, so the menu closes by itself (no setState-in-effect needed).
   const [openedOn, setOpenedOn] = useState<string | null>(null);
   const isOpen = openedOn === pathname;
   const close = () => setOpenedOn(null);
