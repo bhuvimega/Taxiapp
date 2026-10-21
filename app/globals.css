@@ -1,0 +1,451 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   GoCabxi design system
+   --------------------------------------------------------------------------
+   1. @theme inline   → turns CSS variables into Tailwind classes
+                        (--color-brand  ⇒  bg-brand / text-brand / border-brand)
+   2. :root / .dark   → the ONLY place a hex colour is allowed to live
+   3. @layer base     → element defaults
+   4. @utility        → tiny reusable helpers (work with sm:/lg:/hover: prefixes)
+   5. @layer components → reusable class "recipes" (.btn, .feature-card, ...)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS → TAILWIND
+   -------------------------------------------------------------------------- */
+@theme inline {
+  /* Fonts (--font-inter is injected by next/font in app/layout.tsx) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Surfaces (shadcn/ui contract — the components in /components/ui need these) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Semantic colours (shadcn/ui contract) */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* GoCabxi brand */
+  --color-brand: var(--brand);               /* surfaces: section bg, logo tile   */
+  --color-brand-dark: var(--brand-dark);     /* solid buttons with white text     */
+  --color-brand-hover: var(--brand-hover);   /* hover state of brand-dark         */
+  --color-brand-light: var(--brand-light);   /* soft tint: active pill, icon tile */
+  --color-brand-text: var(--brand-text);     /* green TEXT on white (accessible)  */
+  --color-on-brand: var(--on-brand);         /* text / borders on a brand surface */
+  --color-highlight: var(--highlight);       /* yellow accent                     */
+  --color-overlay: var(--overlay);           /* hero image scrim                  */
+  --color-info: var(--info);
+  --color-surface-dark: var(--surface-dark);                       /* dark promo panel  */
+  --color-surface-dark-foreground: var(--surface-dark-foreground); /* text on that panel */
+
+  /* Text scale:  foreground > body > muted-foreground > subtle */
+  --color-body: var(--body);                 /* paragraphs, nav links             */
+  --color-subtle: var(--subtle);             /* placeholders, decorative icons    */
+
+  /* Header (aliases — re-point them in :root to restyle the header only) */
+  --color-header-background: var(--header-background);
+  --color-header-foreground: var(--header-foreground);
+  --color-header-border: var(--header-border);
+  --color-header-link: var(--header-link);
+  --color-header-link-hover: var(--header-link-hover);
+  --color-header-link-active: var(--header-link-active);
+
+  /* Radius scale */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* --------------------------------------------------------------------------
+   2. TOKEN VALUES  (light = :root, dark = .dark)
+   -------------------------------------------------------------------------- */
+:root {
+  --radius: 10px;
+
+  /* Brand */
+  --brand: #68bd45;
+  --brand-dark: #4c8c2d;
+  --brand-hover: #3f7925;
+  --brand-light: #eff7eb;
+  --brand-text: #397f24;
+  --on-brand: #111111;
+  --highlight: #ffc400;
+  --overlay: #21190f;
+  --info: #3b82f6;
+  --surface-dark: #18221a;
+  --surface-dark-foreground: #f5f7f5;
+
+  /* Surfaces */
+  --background: #ffffff;
+  --foreground: #202820;
+  --card: #ffffff;
+  --card-foreground: #202820;
+  --popover: #ffffff;
+  --popover-foreground: #202820;
+
+  /* Semantic */
+  --primary: var(--brand);
+  --primary-foreground: #101a0c;
+  --secondary: var(--brand-light);
+  --secondary-foreground: var(--brand-text);
+  --accent: var(--brand-light);
+  --accent-foreground: var(--brand-text);
+  --muted: #f5f7f5;
+  --muted-foreground: #64748b;
+  --destructive: #dc2626;
+  --border: #e5e7eb;
+  --input: #dfe3eb;
+  --ring: var(--brand);
+
+  /* Text scale */
+  --body: #344054;
+  --subtle: #98a2b3;
+
+  /* Header aliases */
+  --header-background: var(--background);
+  --header-foreground: var(--foreground);
+  --header-border: var(--border);
+  --header-link: var(--body);
+  --header-link-hover: var(--brand-text);
+  --header-link-active: var(--brand-text);
+}
+
+.dark {
+  --brand-light: #23351d;
+  --brand-text: #a5e28c;
+
+  --background: #0a0f0a;
+  --foreground: #f5f7f5;
+  --card: #111811;
+  --card-foreground: #f5f7f5;
+  --popover: #111811;
+  --popover-foreground: #f5f7f5;
+
+  --muted: #202820;
+  --muted-foreground: #a3ada0;
+  --destructive: #f87171;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+
+  --body: #c9d1c7;
+  --subtle: #6b766a;
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE
+   -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. UTILITIES  (can be combined with responsive / state prefixes)
+   -------------------------------------------------------------------------- */
+
+/* Page width + side padding. Use on EVERY section's inner wrapper. */
+@utility site-container {
+  @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8;
+}
+
+/* Narrow reading column (About, legal pages, FAQ …). 864px box = 832px of content. */
+@utility narrow-container {
+  @apply mx-auto w-full max-w-[864px] px-4;
+}
+
+/* Keyboard focus ring. Add to any link / button. */
+@utility focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+}
+
+/* --------------------------------------------------------------------------
+   5. COMPONENT CLASSES
+   -------------------------------------------------------------------------- */
+@layer components {
+  /* ---- Sections ---------------------------------------------------------
+     <section class="section section-brand">
+       <div class="site-container"> <SectionHeading … /> … </div>
+     </section>                                                              */
+  .section {
+    @apply py-14 sm:py-16 lg:py-20;
+  }
+  .section-brand {
+    @apply bg-brand text-on-brand;
+  }
+  .section-head {
+    @apply mb-8 sm:mb-10;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-wider text-brand-text;
+  }
+  .eyebrow + .section-title {
+    @apply mt-3;
+  }
+  .section-brand .eyebrow {
+    @apply text-on-brand;
+  }
+  .section-head-center {
+    @apply text-center;
+  }
+  .section-head-center .section-lead {
+    @apply mx-auto;
+  }
+  .section-title {
+    @apply text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-[32px];
+  }
+  .section-lead {
+    @apply mt-3 max-w-[700px] text-sm leading-6 sm:text-base;
+  }
+
+  /* ---- Cards ------------------------------------------------------------ */
+  .feature-card {
+    @apply flex h-full min-w-0 flex-col rounded-2xl bg-card p-5 text-card-foreground sm:p-6;
+  }
+  .feature-card-title {
+    @apply mt-4 text-base font-semibold leading-6;
+  }
+  .feature-card-text {
+    @apply mt-2 text-sm leading-[23px] text-body;
+  }
+  .feature-card-link {
+    @apply mt-4 inline-flex w-fit items-center gap-2 text-sm font-semibold transition-colors hover:text-brand-text focus-ring;
+  }
+
+  /* Numbered step card (How it works) */
+  .step-card {
+    @apply min-w-0 rounded-2xl bg-muted p-6;
+  }
+  .step-number {
+    @apply text-[40px] font-extrabold leading-none tracking-tight text-input select-none;
+  }
+
+  /* Small pill: badges, spec chips */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+  .chip-soft {
+    @apply bg-brand-light text-brand-text;
+  }
+  .chip-highlight {
+    @apply bg-highlight text-on-brand;
+  }
+  .chip-dark {
+    @apply bg-surface-dark-foreground/10 text-surface-dark-foreground;
+  }
+
+  /* Round initials avatar (testimonials) */
+  .avatar {
+    @apply flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-on-brand;
+  }
+
+  /* White app-store button (always light, also in dark mode) */
+  .store-btn {
+    @apply inline-flex h-12 items-center gap-3 rounded-xl bg-white px-4 text-on-brand transition-colors hover:bg-brand-light focus-ring;
+  }
+
+  /* ---- Slider (components/common/Slider.tsx) ---------------------------- */
+  .slider-track {
+    @apply flex snap-x snap-mandatory gap-5 overflow-x-auto rounded-2xl pb-1;
+    scrollbar-width: none;
+  }
+  .slider-track::-webkit-scrollbar {
+    display: none;
+  }
+  /* 1 slide on mobile, 2 on tablet, 3 on desktop */
+  .slider-item {
+    @apply shrink-0 basis-full snap-start md:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)];
+  }
+  .slider-btn {
+    @apply flex size-10 items-center justify-center rounded-full bg-card text-card-foreground shadow-sm transition-opacity hover:bg-brand-light focus-ring disabled:pointer-events-none disabled:opacity-40;
+  }
+  .slider-dot {
+    @apply relative size-6 rounded-full focus-ring;
+  }
+  .slider-dot::after {
+    content: "";
+    @apply absolute left-1/2 top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-on-brand/30 transition-all;
+  }
+  .slider-dot[aria-current="true"]::after {
+    @apply w-6 bg-on-brand;
+  }
+
+  /* Plain bordered white card (search results, info panels) */
+  .panel {
+    @apply rounded-2xl border bg-card text-card-foreground;
+  }
+
+  /* Card with a full-width image on top (fleet). Put your own padding on the body. */
+  .media-card {
+    @apply flex h-full min-w-0 flex-col overflow-hidden rounded-2xl bg-card text-card-foreground;
+  }
+
+  /* ---- Icon tile  (size-11 by default, override with size-10 etc.) ------ */
+  .icon-tile {
+    @apply flex size-11 shrink-0 items-center justify-center rounded-xl;
+  }
+  .icon-tile-brand {
+    @apply bg-brand text-on-brand;
+  }
+  .icon-tile-soft {
+    @apply bg-brand-light text-brand-text;
+  }
+
+  /* ---- Buttons / links -------------------------------------------------- *
+     Pick ONE look + ONE size:  class="btn btn-solid btn-pill"
+     (shadcn <Button> from /components/ui is still the tool for app screens.) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold transition-colors focus-ring disabled:pointer-events-none;
+  }
+  .btn-outline {
+    @apply border border-brand text-brand-text hover:bg-brand-light;
+  }
+  .btn-solid {
+    @apply bg-brand-dark text-white hover:bg-brand-hover disabled:bg-input disabled:text-muted-foreground;
+  }
+  .btn-highlight {
+    @apply border border-on-brand bg-highlight text-on-brand hover:brightness-95;
+  }
+  .btn-accent {
+    @apply bg-highlight text-on-brand hover:brightness-95;
+  }
+  .btn-light {
+    @apply border border-on-brand bg-white text-on-brand hover:bg-brand-light;
+  }
+  .btn-pill {
+    @apply h-10 rounded-full px-5 text-sm;
+  }
+  .btn-cta {
+    @apply h-14 w-full rounded-xl text-sm font-bold sm:text-base;
+  }
+  .icon-btn {
+    @apply flex size-10 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted focus-ring;
+  }
+
+  .link-body {
+    @apply rounded-sm text-body transition-colors hover:text-brand-text focus-ring;
+  }
+  .link-muted {
+    @apply rounded-sm text-muted-foreground transition-colors duration-200 hover:text-brand-text focus-ring;
+  }
+
+  /* ---- Navigation  (active state comes from aria-current="page") -------- */
+  .nav-link {
+    @apply rounded-xl px-3.5 py-3 text-sm font-medium text-header-link transition-colors hover:bg-muted focus-ring;
+  }
+  .nav-link[aria-current="page"],
+  .nav-link[aria-current="true"] {
+    @apply bg-brand-light text-header-link-active;
+  }
+  .nav-link-mobile {
+    @apply flex min-h-12 items-center rounded-lg px-3 text-[15px];
+  }
+
+  /* ---- FAQ accordion (native <details>, no JavaScript) ------------------ */
+  .faq-item {
+    @apply border-b;
+  }
+  .faq-summary {
+    @apply flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-semibold transition-colors hover:text-brand-text focus-ring;
+  }
+  .faq-summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-chevron {
+    @apply shrink-0 text-muted-foreground transition-transform duration-200;
+  }
+  .faq-item[open] .faq-chevron {
+    @apply rotate-180;
+  }
+  .faq-answer {
+    @apply pb-4 pr-8 text-sm leading-6 text-muted-foreground;
+  }
+
+  /* ---- Booking tabs (icon + label, green underline on the active one) -- */
+  .booking-tabs {
+    @apply flex overflow-x-auto border-b bg-muted px-2 sm:px-4;
+    scrollbar-width: none;
+  }
+  .booking-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .booking-tab {
+    @apply -mb-px flex shrink-0 items-center gap-2 border-b-2 border-transparent px-3 py-4 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-ring focus-visible:ring-inset focus-visible:ring-offset-0 sm:px-4;
+  }
+  .booking-tab[aria-selected="true"] {
+    @apply border-brand text-foreground;
+  }
+
+  /* Round "swap From / To" button */
+  .swap-btn {
+    @apply absolute z-10 flex size-9 items-center justify-center rounded-full border border-input bg-card text-brand-text shadow-sm transition-colors hover:bg-brand-light focus-ring;
+  }
+
+  /* ---- Form fields  (see components/common/Field.tsx) ------------------- */
+  .field-label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+  .field-control {
+    @apply relative block;
+  }
+  .field-control > :is(input, select, textarea) {
+    @apply h-12 w-full min-w-0 rounded-xl border border-input bg-card px-3 text-sm text-body outline-none placeholder:text-subtle focus:border-brand;
+  }
+  .field-control[data-icon] > :is(input, select) {
+    @apply pl-9;
+  }
+  .field-control[data-select] > select {
+    @apply appearance-none pr-9;
+  }
+  .field-control[data-invalid] > :is(input, select) {
+    @apply border-destructive;
+  }
+  .field-error {
+    @apply mt-1 block text-xs text-destructive;
+  }
+  /* hide Chrome's built-in arrow on inputs that use a <datalist> */
+  .field-control > input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+  .field-icon {
+    @apply pointer-events-none absolute top-1/2 -translate-y-1/2;
+  }
+  .field-icon-start {
+    @apply left-3 text-brand;
+  }
+  .field-icon-end {
+    @apply right-3 text-subtle;
+  }
+}
